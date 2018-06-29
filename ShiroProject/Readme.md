@@ -88,7 +88,23 @@ JdbcRealm
     user_role  VARCHAR(20) COMMENT '角色' 
     ) charset=utf8 ENGINE=InnoDB;
 
-自定义的Realm
+    可以通过自定义的Realm   
+
+过滤器Filter：
+
+认证过滤器
+anon 不需要任何认证，直接可以访问
+authBasic  HttpBasic 
+authc  需要认证之后才可以进行访问
+user   需要当前存在用户才可以访问
+logout  退出
+
+
+授权过滤器：
+perms["prm1" ,"prm2"] 需要具备一些相关的权限才可以访问
+roles[ "admin" , "user"] 需要一定的角色才可以访问
+ssl  安全的协议https
+port [6399,2342]  需要是中括号后边写的端口才可以访问
 
 ###Shiro 加密
 Shiro 散列配置
@@ -97,13 +113,21 @@ HashedCredentialsMatcher
 自定义Realm使用散列
 盐的使用
 
-### Shiro集成Spring
-shiro-web 项目
-
 ### Shiro Session管理
 
+SessionManager 
+SessionDAO 实现session增删改查
+
+Redis 实现Session共享
+Redis 实现Session共享存在的问题
 
 ### Shiro 缓存管理
+CacheManager 
+Cache
 
+Redis实现CacheMananger
+
+### Shiro集成Spring
+shiro-web 项目
 
 

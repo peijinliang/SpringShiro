@@ -12,6 +12,7 @@ import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.subject.PrincipalCollection;
 import org.apache.shiro.util.ByteSource;
 import org.springframework.beans.factory.annotation.Autowired;
+
 import java.util.*;
 
 /**
@@ -43,7 +44,6 @@ public class CustomRealm extends AuthorizingRealm {
     protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken authenticationToken) throws AuthenticationException {
         // 1、从主体传过来的认证信息中，获得用户名
         String userName = (String) authenticationToken.getPrincipal();
-        System.out.println("-----------------------------" + userName);
 
         // 2、通过用户名到数据库中获取凭证
         String password = getPasswordByUserName(userName);
@@ -51,9 +51,8 @@ public class CustomRealm extends AuthorizingRealm {
             return null;
         }
 
-        System.out.println("-----------------------------password:" + password);
-        SimpleAuthenticationInfo authenticationInfo = new SimpleAuthenticationInfo("Mark", password, "customRealm");
-        authenticationInfo.setCredentialsSalt(ByteSource.Util.bytes("Mark"));
+        SimpleAuthenticationInfo authenticationInfo = new SimpleAuthenticationInfo(userName, password, "customRealm");
+        authenticationInfo.setCredentialsSalt(ByteSource.Util.bytes(userName));
         return authenticationInfo;
     }
 
@@ -65,6 +64,7 @@ public class CustomRealm extends AuthorizingRealm {
      */
     private String getPasswordByUserName(String userName) {
         User user = userDao.getPasswordByUserName(userName);
+
         if (user == null) {
             return null;
         }
@@ -78,11 +78,11 @@ public class CustomRealm extends AuthorizingRealm {
      * @return
      */
     private Set<String> getRolesByUserName(String userName) {
+        System.out.println("从数据库中获取授权数据：" + userName);
         List<String> list = userDao.getRolesByUserName(userName);
         Set<String> sets = new HashSet<String>(list);
         return sets;
     }
-
 
     private Set<String> getPermissionsByUserName(String userName) {
         Set<String> sets = new HashSet<String>();
@@ -90,6 +90,5 @@ public class CustomRealm extends AuthorizingRealm {
         sets.add("user:update");
         return sets;
     }
-
 
 }
